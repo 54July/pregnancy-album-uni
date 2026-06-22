@@ -1,5 +1,5 @@
 <script setup>
-defineProps({
+const props = defineProps({
   photos: {
     type: Array,
     default: () => [],
@@ -11,12 +11,19 @@ defineProps({
 })
 
 const emit = defineEmits(['remove'])
+
+function previewPhoto(current) {
+  uni.previewImage({
+    current,
+    urls: props.photos.map((p) => p.path),
+  })
+}
 </script>
 
 <template>
   <view v-if="photos.length" class="photo-gallery">
     <view v-for="photo in photos" :key="photo.id" class="photo-item">
-      <image class="photo-image" :src="photo.path" mode="aspectFill" />
+      <image class="photo-image" :src="photo.path" mode="aspectFill" @click="previewPhoto(photo.path)" />
       <text class="photo-name">{{ photo.name }}</text>
       <view
         v-if="editable"
