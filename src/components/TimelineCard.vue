@@ -1,14 +1,21 @@
 <script setup>
 import { formatDate } from '@/utils/date'
 
-defineProps({
+const props = defineProps({
   entry: {
     type: Object,
     required: true,
   },
+  selected: {
+    type: Boolean,
+    default: false,
+  },
 })
 
+const emit = defineEmits(['delete', 'select'])
+
 function openDetail(id) {
+  if (props.selected) return
   uni.navigateTo({
     url: `/pages/detail/detail?id=${id}`,
   })
@@ -16,7 +23,10 @@ function openDetail(id) {
 </script>
 
 <template>
-  <view class="timeline-card" @click="openDetail(entry.id)">
+  <view class="timeline-card" @click="openDetail(entry.id)" @longpress="emit('select')">
+    <view v-if="selected" class="delete-btn" @click.stop="emit('delete', entry.id)">
+      <text class="delete-icon">－</text>
+    </view>
     <view class="timeline-card-media">
       <image
         v-if="entry.photos.length"
@@ -41,6 +51,7 @@ function openDetail(id) {
 
 <style scoped lang="scss">
 .timeline-card {
+  position: relative;
   display: flex;
   gap: 24rpx;
   padding: 24rpx;
@@ -114,5 +125,27 @@ function openDetail(id) {
   display: block;
   margin-top: 12rpx;
   font-size: 24rpx;
+}
+
+.delete-btn {
+  position: absolute;
+  top: -16rpx;
+  left: -16rpx;
+  z-index: 10;
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  background: #e0304a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(224, 48, 74, 0.4);
+}
+
+.delete-icon {
+  color: #fff;
+  font-size: 36rpx;
+  line-height: 1;
+  font-weight: 300;
 }
 </style>

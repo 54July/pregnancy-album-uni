@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import TimelineCard from '@/components/TimelineCard.vue'
 import { useAlbumStore } from '@/stores/album'
 
@@ -7,9 +7,28 @@ const albumStore = useAlbumStore()
 
 const entries = computed(() => albumStore.sortedEntries)
 const totalPhotos = computed(() => albumStore.totalPhotos)
+const selectedId = ref(null)
 
 function goUpload() {
   uni.navigateTo({ url: '/pages/upload/upload' })
+}
+
+function handleSelect(entryId) {
+  selectedId.value = selectedId.value === entryId ? null : entryId
+}
+
+function handleDelete(entryId) {
+  uni.showModal({
+    title: '删除记录',
+    content: '删除后无法恢复，确认删除这条记录吗？',
+    confirmColor: '#e0304a',
+    success(res) {
+      if (res.confirm) {
+        albumStore.deleteEntry(entryId)
+        selectedId.value = null
+      }
+    },
+  })
 }
 </script>
 
@@ -36,7 +55,14 @@ function goUpload() {
       </view>
 
       <view v-if="entries.length" class="timeline-list">
-        <TimelineCard v-for="entry in entries" :key="entry.id" :entry="entry" />
+        <TimelineCard
+          v-for="entry in entries"
+          :key="entry.id"
+          :entry="entry"
+          :selected="selectedId === entry.id"
+          @select="handleSelect(entry.id)"
+          @delete="handleDelete"
+        />
       </view>
 
       <view v-else class="empty-state">

@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { ref } from 'vue'
+
+const props = defineProps({
   photos: {
     type: Array,
     default: () => [],
@@ -11,19 +13,57 @@ defineProps({
 })
 
 const emit = defineEmits(['remove'])
+
+const selectedId = ref(null)
+
+function handleTap(photo) {
+  if (!props.editable) {
+    previewPhoto(photo)
+    return
+  }
+  if (selectedId.value === photo.id) {
+    // 再次点击取消选中，然后预览
+    selectedId.value = null
+    previewPhoto(photo)
+  } else {
+    selectedId.value = photo.id
+  }
+}
+
+function previewPhoto(photo) {
+  uni.previewImage({
+    current: photo.path,
+    urls: props.photos.map((p) => p.path),
+  })
+}
+
+function handleRemove(photoId) {
+  selectedId.value = null
+  emit('remove', photoId)
+}
 </script>
 
 <template>
   <view v-if="photos.length" class="photo-gallery">
-    <view v-for="photo in photos" :key="photo.id" class="photo-item">
-      <image class="photo-image" :src="photo.path" mode="aspectFill" />
+    <view
+      v-for="photo in photos"
+      :key="photo.id"
+      class="photo-item"
+      @click="handleTap(photo)"
+    >
+      <image
+        class="photo-image"
+        :class="{ 'photo-selected': editable && selectedId === photo.id }"
+        :src="photo.path"
+        mode="aspectFill"
+      />
       <text class="photo-name">{{ photo.name }}</text>
       <view
-        v-if="editable"
+        v-if="editable && selectedId === photo.id"
         class="photo-remove"
-        @click.stop="emit('remove', photo.id)"
+        @click.stop="handleRemove(photo.id)"
       >
-        ×
+        <text class="photo-remove-icon">－</text>
       </view>
     </view>
   </view>
@@ -48,6 +88,11 @@ const emit = defineEmits(['remove'])
 .photo-image {
   width: 100%;
   height: 220rpx;
+  transition: opacity 0.15s;
+}
+
+.photo-selected {
+  opacity: 0.75;
 }
 
 .photo-name {
@@ -62,16 +107,23 @@ const emit = defineEmits(['remove'])
 
 .photo-remove {
   position: absolute;
-  top: 12rpx;
-  right: 12rpx;
-  width: 44rpx;
-  height: 44rpx;
+  top: -16rpx;
+  left: -16rpx;
+  width: 52rpx;
+  height: 52rpx;
   border-radius: 50%;
-  background: rgba(47, 36, 48, 0.72);
+  background: #e0304a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 8rpx rgba(224, 48, 74, 0.4);
+}
+
+.photo-remove-icon {
   color: #fff;
-  text-align: center;
-  line-height: 40rpx;
-  font-size: 32rpx;
+  font-size: 36rpx;
+  line-height: 1;
+  font-weight: 300;
 }
 
 .empty-gallery {

@@ -24,6 +24,13 @@ function removePendingPhoto(index) {
   pendingPhotos.value.splice(index, 1)
 }
 
+function previewPhoto(index) {
+  uni.previewImage({
+    current: pendingPhotos.value[index].path,
+    urls: pendingPhotos.value.map((p) => p.path),
+  })
+}
+
 function validateForm() {
   if (!form.week || !/^\d+(\+[0-6])?$/.test(form.week.trim())) {
     return '请填写有效的孕周，如 20 或 34+3'
@@ -116,7 +123,7 @@ function handleSubmit() {
             :key="photo.id"
             class="photo-item"
           >
-            <image class="photo-image" :src="photo.path" mode="aspectFill" />
+            <image class="photo-image" :src="photo.path" mode="aspectFill" @click="previewPhoto(index)" />
             <text class="photo-name">{{ photo.name }}</text>
             <view class="photo-remove" @click="removePendingPhoto(index)">×</view>
           </view>
