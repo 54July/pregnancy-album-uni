@@ -1,6 +1,7 @@
 <script setup>
 import { onLaunch } from '@dcloudio/uni-app'
 import { useAlbumStore } from '@/stores/album'
+import { useChecklistStore } from '@/stores/checklist'
 
 onLaunch(() => {
   // #ifdef MP-WEIXIN
@@ -10,6 +11,7 @@ onLaunch(() => {
   })
   // #endif
   useAlbumStore().init()
+  useChecklistStore() // 触发初始化（从 storage 加载状态）
 })
 </script>
 

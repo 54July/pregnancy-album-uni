@@ -7,6 +7,12 @@
       }
     },
     {
+      "path": "pages/checklist/checklist",
+      "style": {
+        "navigationBarTitleText": "待产包"
+      }
+    },
+    {
       "path": "pages/upload/upload",
       "style": {
         "navigationBarTitleText": "新建记录"
@@ -17,8 +23,34 @@
       "style": {
         "navigationBarTitleText": "记录详情"
       }
+    },
+    {
+      "path": "pages/ai-import/ai-import",
+      "style": {
+        "navigationBarTitleText": "智能导入"
+      }
     }
   ],
+  "tabBar": {
+    "color": "#8b7d84",
+    "selectedColor": "#c85f76",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "孕忆相册",
+        "iconPath": "static/tab-album.png",
+        "selectedIconPath": "static/tab-album-active.png"
+      },
+      {
+        "pagePath": "pages/checklist/checklist",
+        "text": "待产包",
+        "iconPath": "static/tab-bag.png",
+        "selectedIconPath": "static/tab-bag-active.png"
+      }
+    ]
+  },
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "孕忆相册",

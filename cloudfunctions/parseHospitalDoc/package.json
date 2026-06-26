@@ -1,0 +1,7 @@
+{
+  "name": "parseHospitalDoc",
+  "version": "1.0.0",
+  "description": "调用豆包 AI 解析医院待产包文档",
+  "main": "index.js",
+  "dependencies": {}
+}
